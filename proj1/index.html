@@ -77,10 +77,10 @@
 					inside the bounding box, and do a line test to find the points that are inside the bounding box. For every points inside the "enlarged" triangle, we assign it the Color C. 
 					Finally when writing to frame buffer,  we downsample the colors to be the average color of the small block of sample_rate * sample_rate.
 				</p>
-				<div class="row justify-content-md-center">
-					<div class="col-md-6"><img class="img-fluid" src="img/task2_1.png" ></div>
-					<div class="col-md-6"><img class="img-fluid" src="img/task2_4.png" ></div>
-					<div class="col-md-6"><img class="img-fluid" src="img/task2_16.png" ></div>
+				<div class="row justify-content-md-center text-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_1.png" ><p>Sample rate: 1</p></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_4.png" ><p>Sample rate: 4</p></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_16.png" ><p>Sample rate: 16</p></div>
 				</div>
 				<p>2.3 The images above from left to right, top to bottoms are task 4 images with sample rates 1, 4 and 16 respectively. We could see that the higher sample rates are, the triangle edges shown in pixel inspector will be smoother  with more transitional and gradient colors.
 					This is because the higher the sample rate is, the pixel color will be the average the color of more "supersampled" pixels, and the white to red transition will be averaged to smoother.
@@ -100,14 +100,25 @@
 
 			<div class="container">
 				<h2 id="task5">Task 5</h2>
-				<div class="row justify-content-md-center">
-					<div class="col-md-6"><img class="img-fluid" src="img/task3.png" ></div>
-				</div>
 				<p>
-					The my_robot we created is a robot running to the left. To make the arms look like the robot is running, we added a rotation of 45 degree clockwise to the second parts of both arms, and changed the transform numbers to make sure arms are connected normally.
-					To make the legs running, we rotated the upper left leg to 45 degress clockwise, and  lower left leg to 45 degrees counterclockwise, so it looks like the left leg is the main supporting leg. For the right leg, we only added a 60 degree rotation counterclockwise to the lower part.
+					5.1 Pixel sampling is to sample the texture value at a point based on the surrounding texture sample locations. In task 5, we will first use the given vertices to find the barcentric coordinates and interpolation matrics to translate between in screen coordinates and texture images.
+					Then we will iterate through every pixels (x and y) in the supersampling buffers in the screen images, and conduct a barycentric transform to find its corresponding u, v values in the texture image. With the uv values between 0 and 1, we first multiply them by the texture image's width and height, which will give us its coordinates in texture image in double.
+					Then could sample the colors at this point using either nearest sampling or bilinear sampling, and find the correct Color.
 				</p>
+				<p>
+					5.2 The uv texture coordinate we found is likely to be float / double. Nearst sampling is to find the closest 1 texture pixel (with indices to be integers) to simulate the color of the current pixel. Bilinear sampling is to use the 4 surrounding texture sample locations and interpolating their colors together using 
+					lerp function.
+				</p>
+				<p>
+					5.3 As we could see from the images below, nearest sampling will have more abrupt changes on the edges or when colors change, while bilinear interpolation will have smoother transition and less artifact. This is because in the nearest sampling, we only sample the screen pixels from 1 closest texture pixel, which has abrupt changes when colors change.
+					However, with bilinear interpolation, we could blend in the all 4 colors from the surrounding pixels, with larger supersampling, we could blend in and interpolate even more surrounding texture changes. Therefore, bilinear interpolation will be less artifact. 
+				</p>
+				<div class="row justify-content-md-center text-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_1.png" ><p>Nearest Sample, 1 supersample</p></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_1.png" ><p>Bilinear Sample, 1 supersample</p></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_16.png" ><p>Nearest Sample, 16 supersample</p></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_16.png" ><p>Bilinear Sample, 16 supersample</p></div>
+				</div>
 			</div>
-				
 		</body>
 </html>
