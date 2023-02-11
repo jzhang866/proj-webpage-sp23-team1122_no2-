@@ -1,7 +1,113 @@
+<style>
+
+	*{
+	  font-family: "Times New Roman";
+	}
+	
+	h1{
+	  font-size: 70px;
+	}
+	
+	h2{
+	  font-size: 40px;
+	}
+	
+	p{
+	  font-size: 20px;
+	}
+	
+	ul{
+	  font-size: 30px;
+	}
+
+	body {
+	   color: black;
+	}
+	
+	.task_img {
+		width: 800px;
+		margin: 20px;
+	}
+	
+	.task3 {
+		height: 500px;
+		width:  500px;
+		margin: 20px;
+	}
+	
+	</style>
+
 <html>
-	<head>
-	</head>
-	<body>
-		Project 1 here
-	</body>
+		<head>
+		<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+		</head>
+		<body style="padding: 20PX;">
+			<div class="container text-center">
+				<h1 id = "project-1-rasterizer">Project 1: Rasterizer</h1>
+				<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
+			</div>
+			<br>
+
+			<div class="container">
+				<h2 id="overview">Overview</h2>
+			<p></p>
+			</div>
+			
+			<div class="container">
+				<h2 id="task1">Task 1</h2>
+				<p>1.1 To rasterize a triangle, once taking in three vertices position, we will first find the min and max of the corresponding x and y positions to find the bounding box around the triangle. 
+					Then we will do a line test to make sure all three points are all counterclockwise, if not, swap x0 and x1 (y0 and y1 as well). Then iterating through all pixels inside the triangle bounding box, for each pixel, 
+					find the center of the pixels (by adding 0.5 to the integers), and then complete the point in triangle test to make sure this pixel is inside edge for all three edges. If Li(x, y) > 0 for every i, we will fill the pixel with color C.</p>
+				<p>1.2 Since we are iterating over the pixels inside the bounding box of the triangle (from min x to the max x, and from min y to the max y), the algorithms is the same algorithms as checking every pixel in the triangle.</p>
+				<div class="row justify-content-md-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task1.png" ></div>
+				</div>
+			</div>
+
+			<div class="container">
+				<h2 id="task2">Task 2</h2>
+				<p>
+					2.1 The data structure we used to store the supersampled buffer data is the provided sample_buffer, which is a 1-d array of Colors, and its size is the image width * image height * sample_rate.
+					The overall supersampling algorithm is 1) create the sample_buffer data structure of size image width * image height * sample_rate; 2) give every pixels in the "supersampled" image that is within the triangle the Color c; 3) downsample the color to be the average 
+					color of the N by N block when writing to frame buffer.
+				</p>
+				<p>
+					2.2 <b>Why useful?</b>We could see there are jaggles in rasterized triangle in task 1. To smooth the edge, we first supersample the triangles and take the average of the N by N samples inside each pixel. 
+					<b>What modification we made?</b> First, we multiply each vertices x and y with the sample rate, and find the min and max of these "supersampled" vertices to find the bounding box. Then similar to process in task 1, we iterate every x and y 
+					inside the bounding box, and do a line test to find the points that are inside the bounding box. For every points inside the "enlarged" triangle, we assign it the Color C. 
+					Finally when writing to frame buffer,  we downsample the colors to be the average color of the small block of sample_rate * sample_rate.
+				</p>
+				<div class="row justify-content-md-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_1.png" ></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_4.png" ></div>
+					<div class="col-md-6"><img class="img-fluid" src="img/task2_16.png" ></div>
+				</div>
+				<p>2.3 The images above from left to right, top to bottoms are task 4 images with sample rates 1, 4 and 16 respectively. We could see that the higher sample rates are, the triangle edges shown in pixel inspector will be smoother  with more transitional and gradient colors.
+					This is because the higher the sample rate is, the pixel color will be the average the color of more "supersampled" pixels, and the white to red transition will be averaged to smoother.
+				</p>
+			</div>
+
+			<div class="container">
+				<h2 id="task3">Task 3</h2>
+				<div class="row justify-content-md-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task3.png" ></div>
+				</div>
+				<p>
+					The my_robot we created is a robot running to the left. To make the arms look like the robot is running, we added a rotation of 45 degree clockwise to the second parts of both arms, and changed the transform numbers to make sure arms are connected normally.
+					To make the legs running, we rotated the upper left leg to 45 degress clockwise, and  lower left leg to 45 degrees counterclockwise, so it looks like the left leg is the main supporting leg. For the right leg, we only added a 60 degree rotation counterclockwise to the lower part.
+				</p>
+			</div>
+
+			<div class="container">
+				<h2 id="task5">Task 5</h2>
+				<div class="row justify-content-md-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task3.png" ></div>
+				</div>
+				<p>
+					The my_robot we created is a robot running to the left. To make the arms look like the robot is running, we added a rotation of 45 degree clockwise to the second parts of both arms, and changed the transform numbers to make sure arms are connected normally.
+					To make the legs running, we rotated the upper left leg to 45 degress clockwise, and  lower left leg to 45 degrees counterclockwise, so it looks like the left leg is the main supporting leg. For the right leg, we only added a 60 degree rotation counterclockwise to the lower part.
+				</p>
+			</div>
+				
+		</body>
 </html>
