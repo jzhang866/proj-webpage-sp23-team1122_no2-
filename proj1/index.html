@@ -99,6 +99,19 @@
 			</div>
 
 			<div class="container">
+				<h2 id="task4">Task 4</h2>
+				<div class="row justify-content-md-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task4.1.png" ></div>
+				</div>
+				<p>
+					4.1 Suppose we have a triangular with vertices A, B, C and a point inside it, P. Then how is point P represented in barycentric coordinates? The answer is P = alpha * A + beta * B + gamma * C, where alpha represents the distance between point P and line BC over the distance between point A and line BC, beta represents the distance between point P and line CA over the distance between point B and line CA, and gamma represents the distance between point P and line AB over the distance between point C and line AB. The sum of alpha, beta and gamma would be one. Suppose we have a point P at the position of A, then the coordinate would be (1, 0, 0). The color of the pixels is obtained by weighting the colors of three vertices, where the weights are determined by their barycentric coordinate.
+				</p>
+				<div class="row justify-content-md-center text-center">
+					<div class="col-md-6"><img class="img-fluid" src="img/task4_circular.png" ><p>4.2</p></div>
+				</div>
+			</div>
+
+			<div class="container">
 				<h2 id="task5">Task 5</h2>
 				<p>
 					5.1 Pixel sampling is to sample the texture value at a point based on the surrounding texture sample locations. In task 5, we will first use the given vertices to find the barcentric coordinates and interpolation matrics to translate between in screen coordinates and texture images.
@@ -120,5 +133,22 @@
 					<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_16.png" ><p>Bilinear Sample, 16 supersample</p></div>
 				</div>
 			</div>
+
+			<div class="container">
+				<h2 id="task6">Task 6</h2>
+				<p>
+					6.1 When we do texture minification, many texels can contribute to pixel footprint, which means we are sampling a high frequency signal at a low frequency. This would create some new random signals like aliasing. Thus, we need to apply a low-pass filter to the texture, removing high frequencies, and sample at a lower resolution to create a higher-level texture map.
+					Doing this recursively, we will obtain the mipmap with different levels. In practice, we would first generate the mipmap first, then based on the sample frequency, or in other words, the degree of minimization, choose which level or levels of mipmap we would use, according to our mipmap level resampling choice, always level 0 or nearest D or linear interpolation.
+				</p>
+				<p>
+					6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
+					Pixel sampling like bilinear filtering would also take a lot of time and memory, but is great for texture magnification.
+				</p>
+				<p>
+					6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
+					Pixel sampling like bilinear filtering would also take a lot of time and memory, but is great for texture magnification.
+				</p>
+			</div>
+
 		</body>
 </html>
