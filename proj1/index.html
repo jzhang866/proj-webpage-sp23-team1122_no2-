@@ -50,14 +50,17 @@
 
 			<div class="container">
 				<h2 id="overview">Overview</h2>
-			<p></p>
+				<p>
+					In assignment 1, we have implemented some rasterize tools for graphics renderers to draw SVG files. We have accomplished basic rasterizer with antialiasing methods to 
+					draw triangles smoothly with less jaggles, texture mapping to apply pixel sampling onto screen, and transformation coordination for reshaping the objects. Overall, assignment 1 allows us to familiarize ourselves with basic graphic rendering techniques.
+				</p>
 			</div>
 			
 			<div class="container">
 				<h2 id="task1">Task 1</h2>
 				<p>1.1 To rasterize a triangle, once taking in three vertices position, we will first find the min and max of the corresponding x and y positions to find the bounding box around the triangle. 
 					Then we will do a line test to make sure all three points are all counterclockwise, if not, swap x0 and x1 (y0 and y1 as well). Then iterating through all pixels inside the triangle bounding box, for each pixel, 
-					find the center of the pixels (by adding 0.5 to the integers), and then complete the point in triangle test to make sure this pixel is inside edge for all three edges. If Li(x, y) > 0 for every i, we will fill the pixel with color C.</p>
+					find the center of the pixels (by adding 0.5 to the integers), and then complete the point in triangle test to make sure this pixel is inside the edge for all three edges. If Li(x, y) > 0 for every i, we will fill the pixel with color C.</p>
 				<p>1.2 Since we are iterating over the pixels inside the bounding box of the triangle (from min x to the max x, and from min y to the max y), the algorithms is the same algorithms as checking every pixel in the triangle.</p>
 				<div class="row justify-content-md-center">
 					<div class="col-md-6"><img class="img-fluid" src="img/task1.png" ></div>
@@ -139,10 +142,6 @@
 				<p>
 					6.1 When we do texture minification, many texels can contribute to pixel footprint, which means we are sampling a high frequency signal at a low frequency. This would create some new random signals like aliasing. Thus, we need to apply a low-pass filter to the texture, removing high frequencies, and sample at a lower resolution to create a higher-level texture map.
 					Doing this recursively, we will obtain the mipmap with different levels. In practice, we would first generate the mipmap first, then based on the sample frequency, or in other words, the degree of minimization, choose which level or levels of mipmap we would use, according to our mipmap level resampling choice, always level 0 or nearest D or linear interpolation.
-				</p>
-				<p>
-					6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
-					Pixel sampling like bilinear filtering would also take a lot of time and memory, but is great for texture magnification.
 				</p>
 				<p>
 					6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
