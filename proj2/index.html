@@ -59,36 +59,40 @@
 
 <div class="container">
 	<h2 id="task1">Task 1</h2>
-	<p>1.1 To rasterize a triangle, once taking in three vertices position, we will first find the min and max of the corresponding x and y positions to find the bounding box around the triangle.
-		Then we will do a line test to make sure all three points are all counterclockwise, if not, swap x0 and x1 (y0 and y1 as well). Then iterating through all pixels inside the triangle bounding box, for each pixel,
-		find the center of the pixels (by adding 0.5 to the integers), and then complete the point in triangle test to make sure this pixel is inside the edge for all three edges. If Li(x, y) > 0 for every i, we will fill the pixel with color C.</p>
-	<p>1.2 Since we are iterating over the pixels inside the bounding box of the triangle (from min x to the max x, and from min y to the max y), the algorithms is the same algorithms as checking every pixel in the triangle.</p>
-	<div class="row justify-content-md-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task1.png" ></div>
+	<p>
+		1.1 De Casteljau's algorithm can be used to get the point on a Bezier curve based on the given t which belongs to [0, 1]. Additionally, it's a recursive algorithm as
+		it recursively does lerp to finally obtain the corresponding point. In this assignment, to implement de Casteljou's algorithm, we only need to achieve the function named evaluateStep in BezierCurve class.
+		Let's say we have n points, then we need to do the lerp to get n-1 intermediate points based on intermedia_points[i] = (1-t) * points[i] + t * points[i+1], according to the given t. The function would be
+		called again and again until we finally only get one point, which is the point on the Bezier curve.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_1.jpg" ><p>1.3 Step 0</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_2.jpg" ><p>1.3 Step 1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_3.jpg" ><p>1.3 Step 2</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_4.jpg" ><p>1.3 Step 3</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_5.jpg" ><p>1.3 Step 4</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_6.jpg" ><p>1.3 Step 5</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_7.jpg" ><p>1.3 Step 6</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_1.jpg" ><p>1.4</p></div>
 	</div>
+
 </div>
 
 <div class="container">
 	<h2 id="task2">Task 2</h2>
 	<p>
-		2.1 The data structure we used to store the supersampled buffer data is the provided sample_buffer, which is a 1-d array of Colors, and its size is the image width * image height * sample_rate.
-		The overall supersampling algorithm is 1) create the sample_buffer data structure of size image width * image height * sample_rate; 2) give every pixels in the "supersampled" image that is within the triangle the Color c; 3) downsample the color to be the average
-		color of the N by N block when writing to frame buffer.
+		2.1 The main problem is how we can extend de Casteljau's algorithm to a three dimension space. The idea is very simple. We first do this algorithm along one axis based on a process very similar to that
+		adopted in evaluating Bezier curves acocording to the given u. After this we will obtain some intermediate points, then we redo this thing again but along the other axis according to the given v. Finally,
+		we will obtain one point on the Bezier surfaces. To implement this, we just follow this idea to realize this algorithm. We first traverse each vector of control points, do de Casteljau's algorithm
+		to get the intermediate point and put this point into a new vector. After traversing the whole original control points, we then process the intermediate points in that new vector and do the whole thing
+		again and then get the final surface point.
 	</p>
-	<p>
-		2.2 <b>Why useful?</b>We could see there are jaggles in rasterized triangle in task 1. To smooth the edge, we first supersample the triangles and take the average of the N by N samples inside each pixel.
-		<b>What modification we made?</b> First, we multiply each vertices x and y with the sample rate, and find the min and max of these "supersampled" vertices to find the bounding box. Then similar to process in task 1, we iterate every x and y
-		inside the bounding box, and do a line test to find the points that are inside the bounding box. For every points inside the "enlarged" triangle, we assign it the Color C.
-		Finally when writing to frame buffer,  we downsample the colors to be the average color of the small block of sample_rate * sample_rate.
-	</p>
+
 	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task2_1.png" ><p>Sample rate: 1</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task2_4.png" ><p>Sample rate: 4</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task2_16.png" ><p>Sample rate: 16</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_2.jpg" ><p>bez/teapot.bez</p></div>
+
 	</div>
-	<p>2.3 The images above from left to right, top to bottoms are task 4 images with sample rates 1, 4 and 16 respectively. We could see that the higher sample rates are, the triangle edges shown in pixel inspector will be smoother  with more transitional and gradient colors.
-		This is because the higher the sample rate is, the pixel color will be the average the color of more "supersampled" pixels, and the white to red transition will be averaged to smoother.
-	</p>
+
 </div>
 
 <div class="container">
