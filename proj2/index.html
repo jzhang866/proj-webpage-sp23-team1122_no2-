@@ -97,25 +97,28 @@
 
 <div class="container">
 	<h2 id="task3">Part 3</h2>
-	<div class="row justify-content-md-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task3.png" ></div>
-	</div>
 	<p>
-		The my_robot we created is a robot running to the left. To make the arms look like the robot is running, we added a rotation of 45 degree clockwise to the second parts of both arms, and changed the transform numbers to make sure arms are connected normally.
-		To make the legs running, we rotated the upper left leg to 45 degress clockwise, and  lower left leg to 45 degrees counterclockwise, so it looks like the left leg is the main supporting leg. For the right leg, we only added a 60 degree rotation counterclockwise to the lower part.
+		3.1 To implement area-weighted vertex normals, after obtaining some halfedge rooted at the given vertex, we used twin() and next() to traverse all faces incident to that vertex and saved one halfedge of each face into
+		a new vector. Then, we traversed all halfedge in that vector to get the normal of the corresponding face. About obtaining the normal of the face, we could call next() twice then we would get three consecutive
+		halfedge in that face. Then we could access the three vertexes in that face and their position. Given these three vertexes, we could then simply obtain the normal and the area of that face. One thing worth mentioning is that
+		we would do normalization on this normal vector. The last thing we did was weighing all these normals of faces by their corresponding areas and took the result as the final area-weighted vertex normal.
 	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_1.jpg" ><p>w/o vertex normals</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_2.jpg" ><p>with vertex normals</p></div>
+	</div>
 </div>
 
 <div class="container">
-	<h2 id="task4">Task 4</h2>
-	<div class="row justify-content-md-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task4.1.png" ></div>
-	</div>
+	<h2 id="task4">Part 4</h2>
 	<p>
-		4.1 Suppose we have a triangular with vertices A, B, C and a point inside it, P. Then how is point P represented in barycentric coordinates? The answer is P = alpha * A + beta * B + gamma * C, where alpha represents the distance between point P and line BC over the distance between point A and line BC, beta represents the distance between point P and line CA over the distance between point B and line CA, and gamma represents the distance between point P and line AB over the distance between point C and line AB. The sum of alpha, beta and gamma would be one. Suppose we have a point P at the position of A, then the coordinate would be (1, 0, 0). The color of the pixels is obtained by weighting the colors of three vertices, where the weights are determined by their barycentric coordinate.
+		4.1 We followed some suggestions mentioned in the instruction and the provided <a href="http://15462.courses.cs.cmu.edu/fall2015content/misc/HalfedgeEdgeOpImplementationGuide.pdf">guide</a>. Since we wouldn't add or delete any new elements.
+		We first drew a diagram showing the elements before edge flip and that after edge flip. Then we collected all elements no matter whether they would be changed. According to the change found in
+		the diagram, we then updated the pointers for all elements no matter whether they would be affected by the edge flip. Finally, we removed some unnecessary operations. Following this method, we succeeded
+		implementing edge flip in one go.
 	</p>
 	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task4_circular.png" ><p>4.2</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_1.jpg" ></div>
 	</div>
 </div>
 
