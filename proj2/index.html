@@ -123,43 +123,88 @@
 </div>
 
 <div class="container">
-	<h2 id="task5">Task 5</h2>
+	<h2 id="task5">Part 5</h2>
 	<p>
-		5.1 Pixel sampling is to sample the texture value at a point based on the surrounding texture sample locations. In task 5, we will first use the given vertices to find the barcentric coordinates and interpolation matrics to translate between in screen coordinates and texture images.
-		Then we will iterate through every pixels (x and y) in the supersampling buffers in the screen images, and conduct a barycentric transform to find its corresponding u, v values in the texture image. With the uv values between 0 and 1, we first multiply them by the texture image's width and height, which will give us its coordinates in texture image in double.
-		Then could sample the colors at this point using either nearest sampling or bilinear sampling, and find the correct Color.
-	</p>
-	<p>
-		5.2 The uv texture coordinate we found is likely to be float / double. Nearst sampling is to find the closest 1 texture pixel (with indices to be integers) to simulate the color of the current pixel. Bilinear sampling is to use the 4 surrounding texture sample locations and interpolating their colors together using
-		lerp function.
-	</p>
-	<p>
-		5.3 As we could see from the images below, nearest sampling will have more abrupt changes on the edges or when colors change, while bilinear interpolation will have smoother transition and less artifact. This is because in the nearest sampling, we only sample the screen pixels from 1 closest texture pixel, which has abrupt changes when colors change.
-		However, with bilinear interpolation, we could blend in the all 4 colors from the surrounding pixels, with larger supersampling, we could blend in and interpolate even more surrounding texture changes. Therefore, bilinear interpolation will be less artifact.
+		5.1 For edge split, I first drew out the edge / halfedge / vertex distribution dialog similar to the one provided in the primer link.
+		As shown image below, the v4 represents the new vertex being added, and I reused the original h0 as the halfedge going out from v4. Then in the implementation, I simply iterate all the halfedges from h0 to h15, and then map its next / twin / vertext/ edge and face respectively according to the diagram.
+		Even though this might lead to redundancy and sometimes the half edge mapping didn't change, this method allows me to make sure every half edge and relationship is updated thoroughly.
 	</p>
 	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_1.png" ><p>Nearest Sample, 1 supersample</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_1.png" ><p>Bilinear Sample, 1 supersample</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_16.png" ><p>Nearest Sample, 16 supersample</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_16.png" ><p>Bilinear Sample, 16 supersample</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_1.jpg" ><p>Edge split diagram: after split</p></div>
+	</div>
+	<p>
+		5.2 The images below are screenshots of teapot.dae, before and after some edge splits.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_1.png" ><p>Teapot.dae: before edge split</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_2.png" ><p>Teapot.dae: after edge split</p></div>
+	</div>
+	<p>
+		5.3 The images below are screenshots of teapot.dae, before and after some edge splits and edge flips.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_1.png" ><p>Teapot.dae: before edge split or edge flip</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_2.png" ><p>Teapot.dae: after combination of edge split and edge flips</p></div>
+	</div>
+	<p>
+		5.4 I met one minor bug when I was implementing task 6. As the image below shown, there are some holes in the cube.dae when performing loop subdivision. Then I found many people encounter similar issues in ed discussion and apparently this was related to split edge function. Following their advice, I rechecked my split function, and 
+		iterated through all the edges/halfedges/vertices/faces in splitEdge() function, which finally fixed the issue. It was indeed really hard to debug this portion.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_4.png" ><p>Cube.dae, some shapes with bugs inside edge split</p></div>
 	</div>
 </div>
 
 <div class="container">
-	<h2 id="task6">Task 6</h2>
+	<h2 id="task6">Part 6</h2>
 	<p>
-		6.1 When we do texture minification, many texels can contribute to pixel footprint, which means we are sampling a high frequency signal at a low frequency. This would create some new random signals like aliasing. Thus, we need to apply a low-pass filter to the texture, removing high frequencies, and sample at a lower resolution to create a higher-level texture map.
-		Doing this recursively, we will obtain the mipmap with different levels. In practice, we would first generate the mipmap first, then based on the sample frequency, or in other words, the degree of minimization, choose which level or levels of mipmap we would use, according to our mipmap level resampling choice, always level 0 or nearest D or linear interpolation.
+		<b>6.1 Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</b>
+		<br>
+		6.1.1 I implemented the loop subdivision as suggested in the description. First, I iterated through all vertices in the mesh, and for each vertex,
+		I used halfedge and twin edge's traverse to iterating over halfedges around each vertex to calculate their neighborsum, then I assigned u * originalNeighborSum + (1 - count * u) * v->position to be the new position of each vertex. Second, I iterated through all edges, and found the a, b,c,d points
+		of the given edge to calculate what should be the new position of the split vertex. Third, I itereated through all the existing edges, and split the edge. For the new vertex from the split edge, I marked it as new edge, and assigned its new position from the edge's newPosition, and marked the new edges (that are not along the original edge)
+		to be new edge. Forth, I iterated the edges again to flip all the new edges that connects an old and new vertex. Finally, I marked all vertices and edges as not new, and assigned vertex's position = newPosition. 
+		<br>
+		For the debugging tricks, I printed out the position of the vertices as a ID identification for each vertex, and always print out to check the "new" attribute of the edges / vertex. Initially one of the bug is that I was stuck in a infinite loop while traversing through edges in step 3. I printed out the vertex of the halfedge related to the current edge, and printed out if the 
+		edge is new or not, and then realized that my bug was caused by traversing through all edges instead of only the original mesh.
 	</p>
 	<p>
-		6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
-		Pixel sampling like bilinear filtering would also take a lot of time and memory, but is great for texture magnification.
+		6.2.1 As we could see from the cow.dae, originally the cow's face and the corner of the horns was pretty sharp without loop subdivision. After 1-2 loop subdivision, we could see that the horns became round and smooth without its original sharpness. This is because we have performed many edge flip and split on the corners,
+		so the sharp corners are represented by more triangles after loop subdivision. Also we have recalculated the positions of the new vertex as the weighted sum of the neighborhood vertices, which smoothed out the sharpness. 
 	</p>
 	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/task6_1.png" ><p>L_ZERO and P_NEAREST</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task6_2.png" ><p>L_ZERO and P_LINEAR</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task6_3.png" ><p>L_NEAREST and P_NEAREST</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/task6_4.png" ><p>L_NEAREST and P_LINEAR</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_1.png" ><p>Without loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_2.png" ><p>1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_3.png" ><p>2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_4.png" ><p>Zoom in on the horns after 2 loop subdivision</p></div>
+	</div>
+	<p> 6.2.2 To reduce the smoothness effect, we could pre-splitting some of the edges, so that the corner sharpness can be represented by more edges in the original mesh. Then in the loop subdivision, since each vertex will be calculated by its neighborhood vertex, this pre-splitting will create more neighbor vertices around the corner,
+		thus weighted sum could still maintain its sharpness. In the images below, the left cow horn has some pre-splitting edges first before loop subdivision, while the right cow horn on the right image doesn't have any pre-splitting. We could see that it is clear that the left corn is more sharp than the right horn.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_5.png" ><p>Loop subdivision after splitting more edges on the corner edge first</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_6.png" ><p>Loop subdivision without pre-processing</p></div>
+	</div>
+	<p>
+		6.3 As we could see that after iterations of loop subdivision on the cube, it became slightly asymmetric. This is because the original cube only had 1 edge on each of the face. From the 3/8 * (A + B) + 1/8 * (C + D) formula, when performing edge split, we calculated the new vertex's position
+		and assigned different weights to the neighbor vertices, which will cause unbalance and formed the asymmetric shape.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_1.png" ><p>Without loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2.png" ><p>1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_3.png" ><p>2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_4.png" ><p>4 loop subdivision</p></div>
+	</div>
+	<p>
+		To solve this assymetric issue, we just need to perform an edge split on each face first before loop subdivision so that each face has 2 edges. Then neighborhood vertex will have an equal weight / contribution to the new vertex in loop subdivision, and will form a more symmetrics shape after subdivision.
+		As we could see from the images below, the cubes that are edge split first will be much more balanced / symmetric than the original form.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_1.png" ><p>Edge split first for each face</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_2.png" ><p>After 1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_3.png" ><p>After 2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_4.png" ><p>After 3 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_5.png" ><p>After n loop subdivision</p></div>
 	</div>
 </div>
 
