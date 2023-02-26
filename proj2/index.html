@@ -1,7 +1,160 @@
+<style>
+
+	*{
+		font-family: "Times New Roman";
+	}
+
+	h1{
+		font-size: 70px;
+	}
+
+	h2{
+		font-size: 40px;
+	}
+
+	p{
+		font-size: 20px;
+	}
+
+	ul{
+		font-size: 30px;
+	}
+
+	body {
+		color: black;
+	}
+
+	.task_img {
+		width: 800px;
+		margin: 20px;
+	}
+
+	.task3 {
+		height: 500px;
+		width:  500px;
+		margin: 20px;
+	}
+
+</style>
+
 <html>
-	<head>
-	</head>
-	<body>
-		Project 2 here
-	</body>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="padding: 20PX;">
+<div class="container text-center">
+	<h1 id = "project-1-rasterizer">Project 2: Rasterizer</h1>
+	<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
+	<p>Here is the link to our pages: <a href="https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/">https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/</a></p>
+</div>
+<br>
+
+<div class="container">
+	<h2 id="overview">Overview</h2>
+	<p>
+		In assignment 1, we have implemented some rasterize tools for graphics renderers to draw SVG files. We have accomplished basic rasterizer with antialiasing methods to
+		draw triangles smoothly with less jaggles, texture mapping to apply pixel sampling onto screen, and transformation coordination for reshaping the objects. Overall, assignment 1 allows us to familiarize ourselves with basic graphic rendering techniques.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task1">Task 1</h2>
+	<p>1.1 To rasterize a triangle, once taking in three vertices position, we will first find the min and max of the corresponding x and y positions to find the bounding box around the triangle.
+		Then we will do a line test to make sure all three points are all counterclockwise, if not, swap x0 and x1 (y0 and y1 as well). Then iterating through all pixels inside the triangle bounding box, for each pixel,
+		find the center of the pixels (by adding 0.5 to the integers), and then complete the point in triangle test to make sure this pixel is inside the edge for all three edges. If Li(x, y) > 0 for every i, we will fill the pixel with color C.</p>
+	<p>1.2 Since we are iterating over the pixels inside the bounding box of the triangle (from min x to the max x, and from min y to the max y), the algorithms is the same algorithms as checking every pixel in the triangle.</p>
+	<div class="row justify-content-md-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task1.png" ></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task2">Task 2</h2>
+	<p>
+		2.1 The data structure we used to store the supersampled buffer data is the provided sample_buffer, which is a 1-d array of Colors, and its size is the image width * image height * sample_rate.
+		The overall supersampling algorithm is 1) create the sample_buffer data structure of size image width * image height * sample_rate; 2) give every pixels in the "supersampled" image that is within the triangle the Color c; 3) downsample the color to be the average
+		color of the N by N block when writing to frame buffer.
+	</p>
+	<p>
+		2.2 <b>Why useful?</b>We could see there are jaggles in rasterized triangle in task 1. To smooth the edge, we first supersample the triangles and take the average of the N by N samples inside each pixel.
+		<b>What modification we made?</b> First, we multiply each vertices x and y with the sample rate, and find the min and max of these "supersampled" vertices to find the bounding box. Then similar to process in task 1, we iterate every x and y
+		inside the bounding box, and do a line test to find the points that are inside the bounding box. For every points inside the "enlarged" triangle, we assign it the Color C.
+		Finally when writing to frame buffer,  we downsample the colors to be the average color of the small block of sample_rate * sample_rate.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task2_1.png" ><p>Sample rate: 1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task2_4.png" ><p>Sample rate: 4</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task2_16.png" ><p>Sample rate: 16</p></div>
+	</div>
+	<p>2.3 The images above from left to right, top to bottoms are task 4 images with sample rates 1, 4 and 16 respectively. We could see that the higher sample rates are, the triangle edges shown in pixel inspector will be smoother  with more transitional and gradient colors.
+		This is because the higher the sample rate is, the pixel color will be the average the color of more "supersampled" pixels, and the white to red transition will be averaged to smoother.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task3">Task 3</h2>
+	<div class="row justify-content-md-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task3.png" ></div>
+	</div>
+	<p>
+		The my_robot we created is a robot running to the left. To make the arms look like the robot is running, we added a rotation of 45 degree clockwise to the second parts of both arms, and changed the transform numbers to make sure arms are connected normally.
+		To make the legs running, we rotated the upper left leg to 45 degress clockwise, and  lower left leg to 45 degrees counterclockwise, so it looks like the left leg is the main supporting leg. For the right leg, we only added a 60 degree rotation counterclockwise to the lower part.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task4">Task 4</h2>
+	<div class="row justify-content-md-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task4.1.png" ></div>
+	</div>
+	<p>
+		4.1 Suppose we have a triangular with vertices A, B, C and a point inside it, P. Then how is point P represented in barycentric coordinates? The answer is P = alpha * A + beta * B + gamma * C, where alpha represents the distance between point P and line BC over the distance between point A and line BC, beta represents the distance between point P and line CA over the distance between point B and line CA, and gamma represents the distance between point P and line AB over the distance between point C and line AB. The sum of alpha, beta and gamma would be one. Suppose we have a point P at the position of A, then the coordinate would be (1, 0, 0). The color of the pixels is obtained by weighting the colors of three vertices, where the weights are determined by their barycentric coordinate.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task4_circular.png" ><p>4.2</p></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task5">Task 5</h2>
+	<p>
+		5.1 Pixel sampling is to sample the texture value at a point based on the surrounding texture sample locations. In task 5, we will first use the given vertices to find the barcentric coordinates and interpolation matrics to translate between in screen coordinates and texture images.
+		Then we will iterate through every pixels (x and y) in the supersampling buffers in the screen images, and conduct a barycentric transform to find its corresponding u, v values in the texture image. With the uv values between 0 and 1, we first multiply them by the texture image's width and height, which will give us its coordinates in texture image in double.
+		Then could sample the colors at this point using either nearest sampling or bilinear sampling, and find the correct Color.
+	</p>
+	<p>
+		5.2 The uv texture coordinate we found is likely to be float / double. Nearst sampling is to find the closest 1 texture pixel (with indices to be integers) to simulate the color of the current pixel. Bilinear sampling is to use the 4 surrounding texture sample locations and interpolating their colors together using
+		lerp function.
+	</p>
+	<p>
+		5.3 As we could see from the images below, nearest sampling will have more abrupt changes on the edges or when colors change, while bilinear interpolation will have smoother transition and less artifact. This is because in the nearest sampling, we only sample the screen pixels from 1 closest texture pixel, which has abrupt changes when colors change.
+		However, with bilinear interpolation, we could blend in the all 4 colors from the surrounding pixels, with larger supersampling, we could blend in and interpolate even more surrounding texture changes. Therefore, bilinear interpolation will be less artifact.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_1.png" ><p>Nearest Sample, 1 supersample</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_1.png" ><p>Bilinear Sample, 1 supersample</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task5_nearest_16.png" ><p>Nearest Sample, 16 supersample</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task5_bi_16.png" ><p>Bilinear Sample, 16 supersample</p></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task6">Task 6</h2>
+	<p>
+		6.1 When we do texture minification, many texels can contribute to pixel footprint, which means we are sampling a high frequency signal at a low frequency. This would create some new random signals like aliasing. Thus, we need to apply a low-pass filter to the texture, removing high frequencies, and sample at a lower resolution to create a higher-level texture map.
+		Doing this recursively, we will obtain the mipmap with different levels. In practice, we would first generate the mipmap first, then based on the sample frequency, or in other words, the degree of minimization, choose which level or levels of mipmap we would use, according to our mipmap level resampling choice, always level 0 or nearest D or linear interpolation.
+	</p>
+	<p>
+		6.2 If we sample a lot of pixels, we would definitely have a very high performance, but this would take a very long time and would consume many memory. Level sampling would consume a lot of memory, since we need to save mipmap of all levels. However, once it's done, it would take few time to get the result and the antialiasing power would almost be as good as sampling a lot of pixels.
+		Pixel sampling like bilinear filtering would also take a lot of time and memory, but is great for texture magnification.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/task6_1.png" ><p>L_ZERO and P_NEAREST</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task6_2.png" ><p>L_ZERO and P_LINEAR</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task6_3.png" ><p>L_NEAREST and P_NEAREST</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/task6_4.png" ><p>L_NEAREST and P_LINEAR</p></div>
+	</div>
+</div>
+
+</body>
 </html>
