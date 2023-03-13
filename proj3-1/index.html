@@ -1,7 +1,212 @@
+<style>
+
+	*{
+		font-family: "Times New Roman";
+	}
+
+	h1{
+		font-size: 70px;
+	}
+
+	h2{
+		font-size: 40px;
+	}
+
+	p{
+		font-size: 20px;
+	}
+
+	ul{
+		font-size: 30px;
+	}
+
+	body {
+		color: black;
+	}
+
+	.task_img {
+		width: 800px;
+		margin: 20px;
+	}
+
+	.task3 {
+		height: 500px;
+		width:  500px;
+		margin: 20px;
+	}
+
+</style>
+
 <html>
-	<head>
-	</head>
-	<body>
-		Project 3-1 here
-	</body>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="padding: 20PX;">
+<div class="container text-center">
+	<h1 id = "project-1-rasterizer">Project 3: PathTracer</h1>
+	<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
+	<p>Here is the link to our pages: <a href="https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/">https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/</a></p>
+</div>
+<br>
+
+<div class="container">
+	<h2 id="overview">Overview</h2>
+	<p>
+		In assignment 2, we have implemented some basic tools for bezier curves and extended the de Casteljau's algorithm to a three dimension space. We have also learnt the half edge data structure and basic tools to flip and split
+		edges, which were then used in loop subdivision for mesh unsampling.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task1">Part 1</h2>
+	<p>
+		1.1 De Casteljau's algorithm can be used to get the point on a Bezier curve based on the given t which belongs to [0, 1]. Additionally, it's a recursive algorithm as
+		it recursively does lerp to finally obtain the corresponding point. In this assignment, to implement de Casteljou's algorithm, we only need to achieve the function named evaluateStep in BezierCurve class.
+		Let's say we have n points, then we need to do the lerp to get n-1 intermediate points based on intermedia_points[i] = (1-t) * points[i] + t * points[i+1], according to the given t. The function would be
+		called again and again until we only get one point, which is taken as the point on the Bezier curve.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_1.jpg" ><p>1.3 Step 0</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_2.jpg" ><p>1.3 Step 1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_3.jpg" ><p>1.3 Step 2</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_4.jpg" ><p>1.3 Step 3</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_5.jpg" ><p>1.3 Step 4</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_6.jpg" ><p>1.3 Step 5</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_7.jpg" ><p>1.3 Step 6</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_1.jpg" ><p>1.4</p></div>
+	</div>
+
+</div>
+
+<div class="container">
+	<h2 id="task2">Part 2</h2>
+	<p>
+		2.1 The main problem is how we can extend de Casteljau's algorithm to a three dimension space. The idea is very simple. We first do this algorithm along one axis based on a process very similar to that
+		adopted in evaluating Bezier curves acocording to the given u. After this we will obtain some intermediate points, then we redo this thing again but along the other axis according to the given v. Finally,
+		we will obtain one point on the Bezier surfaces. To implement this, we just followed this idea to realize this algorithm. We first traversed each vector of control points, do de Casteljau's algorithm
+		to get the intermediate point and put this point into a new vector. After traversing the whole original control points, we then processed the intermediate points in that new vector and did the algorithm
+		again and finally obtained the final surface point.
+	</p>
+
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_2.jpg" ><p>bez/teapot.bez</p></div>
+
+	</div>
+
+</div>
+
+<div class="container">
+	<h2 id="task3">Part 3</h2>
+	<p>
+		3.1 To implement area-weighted vertex normals, after obtaining some halfedge rooted at the given vertex, we used twin() and next() to traverse all faces incident to that vertex and saved one halfedge of each face into
+		a new vector. Then, we traversed all halfedge in that vector to get the normal of the corresponding face. About obtaining the normal of the face, we could call next() twice then we would get three consecutive
+		halfedge in that face. Then we could access the three vertexes in that face and their position. Given these three vertexes, we could then simply obtain the normal and the area of that face. One thing worth mentioning is that
+		we would do normalization on this normal vector. The last thing we did was weighing all these normals of faces by their corresponding areas and took the result as the final area-weighted vertex normal.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_1.jpg" ><p>w/o vertex normals</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_2.jpg" ><p>with vertex normals</p></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task4">Part 4</h2>
+	<p>
+		4.1 We followed some suggestions mentioned in the instruction and the provided <a href="http://15462.courses.cs.cmu.edu/fall2015content/misc/HalfedgeEdgeOpImplementationGuide.pdf">guide</a>. Since we wouldn't add or delete any new elements.
+		We first drew a diagram showing the elements before edge flip and that after edge flip. Then we collected all elements no matter whether they would be changed. According to the change found in
+		the diagram, we then updated the pointers for all elements no matter whether they would be affected by the edge flip. Finally, we removed some unnecessary operations. Following this guide, we succeeded
+		implementing edge flip in one go.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_1.jpg" ></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task5">Part 5</h2>
+	<p>
+		5.1 For edge split, I first drew out the edge / halfedge / vertex distribution dialog similar to the one provided in the primer link.
+		As shown image below, the v4 represents the new vertex being added, and I reused the original h0 as the halfedge going out from v4. Then in the implementation, I simply iterate all the halfedges from h0 to h15, and then map its next / twin / vertext/ edge and face respectively according to the diagram.
+		Even though this might lead to redundancy and sometimes the half edge mapping didn't change, this method allows me to make sure every half edge and relationship is updated thoroughly.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_1.jpg" ><p>Edge split diagram: after split</p></div>
+	</div>
+	<p>
+		5.2 The images below are screenshots of teapot.dae, before and after some edge splits.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_1.png" ><p>Teapot.dae: before edge split</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_2.png" ><p>Teapot.dae: after edge split</p></div>
+	</div>
+	<p>
+		5.3 The images below are screenshots of teapot.dae, before and after some edge splits and edge flips.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_1.png" ><p>Teapot.dae: before edge split or edge flip</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_2.png" ><p>Teapot.dae: after combination of edge split and edge flips</p></div>
+	</div>
+	<p>
+		5.4 I met one minor bug when I was implementing task 6. As the image below shown, there are some holes in the cube.dae when performing loop subdivision. Then I found many people encounter similar issues in ed discussion and apparently this was related to split edge function. Following their advice, I rechecked my split function, and
+		iterated through all the edges/halfedges/vertices/faces in splitEdge() function, which finally fixed the issue. It was indeed really hard to debug this portion.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5_4.png" ><p>Cube.dae, some shapes with bugs inside edge split</p></div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task6">Part 6</h2>
+	<p>
+		<b>6.1 Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</b>
+		<br>
+		6.1.1 I implemented the loop subdivision as suggested in the description. First, I iterated through all vertices in the mesh, and for each vertex,
+		I used halfedge and twin edge's traverse to iterating over halfedges around each vertex to calculate their neighborsum, then I assigned u * originalNeighborSum + (1 - count * u) * v->position to be the new position of each vertex. Second, I iterated through all edges, and found the a, b,c,d points
+		of the given edge to calculate what should be the new position of the split vertex. Third, I itereated through all the existing edges, and split the edge. For the new vertex from the split edge, I marked it as new edge, and assigned its new position from the edge's newPosition, and marked the new edges (that are not along the original edge)
+		to be new edge. Forth, I iterated the edges again to flip all the new edges that connects an old and new vertex. Finally, I marked all vertices and edges as not new, and assigned vertex's position = newPosition.
+		<br>
+		For the debugging tricks, I printed out the position of the vertices as a ID identification for each vertex, and always print out to check the "new" attribute of the edges / vertex. Initially one of the bug is that I was stuck in a infinite loop while traversing through edges in step 3. I printed out the vertex of the halfedge related to the current edge, and printed out if the
+		edge is new or not, and then realized that my bug was caused by traversing through all edges instead of only the original mesh.
+	</p>
+	<p>
+		6.2.1 As we could see from the cow.dae, originally the cow's face and the corner of the horns was pretty sharp without loop subdivision. After 1-2 loop subdivision, we could see that the horns became round and smooth without its original sharpness. This is because we have performed many edge flip and split on the corners,
+		so the sharp corners are represented by more triangles after loop subdivision. Also we have recalculated the positions of the new vertex as the weighted sum of the neighborhood vertices, which smoothed out the sharpness.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_1.png" ><p>Without loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_2.png" ><p>1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_3.png" ><p>2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_4.png" ><p>Zoom in on the horns after 2 loop subdivision</p></div>
+	</div>
+	<p> 6.2.2 To reduce the smoothness effect, we could pre-splitting some of the edges, so that the corner sharpness can be represented by more edges in the original mesh. Then in the loop subdivision, since each vertex will be calculated by its neighborhood vertex, this pre-splitting will create more neighbor vertices around the corner,
+		thus weighted sum could still maintain its sharpness. In the images below, the left cow horn has some pre-splitting edges first before loop subdivision, while the right cow horn on the right image doesn't have any pre-splitting. We could see that it is clear that the left corn is more sharp than the right horn.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_5.png" ><p>Loop subdivision after splitting more edges on the corner edge first</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_6.png" ><p>Loop subdivision without pre-processing</p></div>
+	</div>
+	<p>
+		6.3 As we could see that after iterations of loop subdivision on the cube, it became slightly asymmetric. This is because the original cube only had 1 edge on each of the face. From the 3/8 * (A + B) + 1/8 * (C + D) formula, when performing edge split, we calculated the new vertex's position
+		and assigned different weights to the neighbor vertices, which will cause unbalance and formed the asymmetric shape.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_1.png" ><p>Without loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2.png" ><p>1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_3.png" ><p>2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_4.png" ><p>4 loop subdivision</p></div>
+	</div>
+	<p>
+		To solve this assymetric issue, we just need to perform an edge split on each face first before loop subdivision so that each face has 2 edges. Then neighborhood vertex will have an equal weight / contribution to the new vertex in loop subdivision, and will form a more symmetrics shape after subdivision.
+		As we could see from the images below, the cubes that are edge split first will be much more balanced / symmetric than the original form.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_1.png" ><p>Edge split first for each face</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_2.png" ><p>After 1 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_3.png" ><p>After 2 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_4.png" ><p>After 3 loop subdivision</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_5.png" ><p>After n loop subdivision</p></div>
+	</div>
+</div>
+
+</body>
 </html>
