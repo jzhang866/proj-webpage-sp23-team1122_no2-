@@ -119,120 +119,6 @@
 
 <div class="container">
 	<h2 id="task3">Part 3</h2>
-	<p>
-		3.1 To implement area-weighted vertex normals, after obtaining some halfedge rooted at the given vertex, we used twin() and next() to traverse all faces incident to that vertex and saved one halfedge of each face into
-		a new vector. Then, we traversed all halfedge in that vector to get the normal of the corresponding face. About obtaining the normal of the face, we could call next() twice then we would get three consecutive
-		halfedge in that face. Then we could access the three vertexes in that face and their position. Given these three vertexes, we could then simply obtain the normal and the area of that face. One thing worth mentioning is that
-		we would do normalization on this normal vector. The last thing we did was weighing all these normals of faces by their corresponding areas and took the result as the final area-weighted vertex normal.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t3_1.jpg" ><p>w/o vertex normals</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t3_2.jpg" ><p>with vertex normals</p></div>
-	</div>
-</div>
-
-<div class="container">
-	<h2 id="task4">Part 4</h2>
-	<p>
-		4.1 We followed some suggestions mentioned in the instruction and the provided <a href="http://15462.courses.cs.cmu.edu/fall2015content/misc/HalfedgeEdgeOpImplementationGuide.pdf">guide</a>. Since we wouldn't add or delete any new elements.
-		We first drew a diagram showing the elements before edge flip and that after edge flip. Then we collected all elements no matter whether they would be changed. According to the change found in
-		the diagram, we then updated the pointers for all elements no matter whether they would be affected by the edge flip. Finally, we removed some unnecessary operations. Following this guide, we succeeded
-		implementing edge flip in one go.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t4_1.jpg" ></div>
-	</div>
-</div>
-
-<div class="container">
-	<h2 id="task5">Part 5</h2>
-	<p>
-		5.1 For edge split, I first drew out the edge / halfedge / vertex distribution dialog similar to the one provided in the primer link.
-		As shown image below, the v4 represents the new vertex being added, and I reused the original h0 as the halfedge going out from v4. Then in the implementation, I simply iterate all the halfedges from h0 to h15, and then map its next / twin / vertext/ edge and face respectively according to the diagram.
-		Even though this might lead to redundancy and sometimes the half edge mapping didn't change, this method allows me to make sure every half edge and relationship is updated thoroughly.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_1.jpg" ><p>Edge split diagram: after split</p></div>
-	</div>
-	<p>
-		5.2 The images below are screenshots of teapot.dae, before and after some edge splits.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_1.png" ><p>Teapot.dae: before edge split</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_2_2.png" ><p>Teapot.dae: after edge split</p></div>
-	</div>
-	<p>
-		5.3 The images below are screenshots of teapot.dae, before and after some edge splits and edge flips.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_1.png" ><p>Teapot.dae: before edge split or edge flip</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_3_2.png" ><p>Teapot.dae: after combination of edge split and edge flips</p></div>
-	</div>
-	<p>
-		5.4 I met one minor bug when I was implementing task 6. As the image below shown, there are some holes in the cube.dae when performing loop subdivision. Then I found many people encounter similar issues in ed discussion and apparently this was related to split edge function. Following their advice, I rechecked my split function, and
-		iterated through all the edges/halfedges/vertices/faces in splitEdge() function, which finally fixed the issue. It was indeed really hard to debug this portion.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t5_4.png" ><p>Cube.dae, some shapes with bugs inside edge split</p></div>
-	</div>
-</div>
-
-<div class="container">
-	<h2 id="task6">Contributions</h2>
-	<p>
-		<b>6.1 Briefly explain how you implemented the loop subdivision and describe any interesting implementation / debugging tricks you have used.</b>
-		<br>
-		6.1.1 I implemented the loop subdivision as suggested in the description. First, I iterated through all vertices in the mesh, and for each vertex,
-		I used halfedge and twin edge's traverse to iterating over halfedges around each vertex to calculate their neighborsum, then I assigned u * originalNeighborSum + (1 - count * u) * v->position to be the new position of each vertex. Second, I iterated through all edges, and found the a, b,c,d points
-		of the given edge to calculate what should be the new position of the split vertex. Third, I itereated through all the existing edges, and split the edge. For the new vertex from the split edge, I marked it as new edge, and assigned its new position from the edge's newPosition, and marked the new edges (that are not along the original edge)
-		to be new edge. Forth, I iterated the edges again to flip all the new edges that connects an old and new vertex. Finally, I marked all vertices and edges as not new, and assigned vertex's position = newPosition.
-		<br>
-		For the debugging tricks, I printed out the position of the vertices as a ID identification for each vertex, and always print out to check the "new" attribute of the edges / vertex. Initially one of the bug is that I was stuck in a infinite loop while traversing through edges in step 3. I printed out the vertex of the halfedge related to the current edge, and printed out if the
-		edge is new or not, and then realized that my bug was caused by traversing through all edges instead of only the original mesh.
-	</p>
-	<p>
-		6.2.1 As we could see from the cow.dae, originally the cow's face and the corner of the horns was pretty sharp without loop subdivision. After 1-2 loop subdivision, we could see that the horns became round and smooth without its original sharpness. This is because we have performed many edge flip and split on the corners,
-		so the sharp corners are represented by more triangles after loop subdivision. Also we have recalculated the positions of the new vertex as the weighted sum of the neighborhood vertices, which smoothed out the sharpness.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_1.png" ><p>Without loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_2.png" ><p>1 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_3.png" ><p>2 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_4.png" ><p>Zoom in on the horns after 2 loop subdivision</p></div>
-	</div>
-	<p> 6.2.2 To reduce the smoothness effect, we could pre-splitting some of the edges, so that the corner sharpness can be represented by more edges in the original mesh. Then in the loop subdivision, since each vertex will be calculated by its neighborhood vertex, this pre-splitting will create more neighbor vertices around the corner,
-		thus weighted sum could still maintain its sharpness. In the images below, the left cow horn has some pre-splitting edges first before loop subdivision, while the right cow horn on the right image doesn't have any pre-splitting. We could see that it is clear that the left corn is more sharp than the right horn.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_5.png" ><p>Loop subdivision after splitting more edges on the corner edge first</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_2_6.png" ><p>Loop subdivision without pre-processing</p></div>
-	</div>
-	<p>
-		6.3 As we could see that after iterations of loop subdivision on the cube, it became slightly asymmetric. This is because the original cube only had 1 edge on each of the face. From the 3/8 * (A + B) + 1/8 * (C + D) formula, when performing edge split, we calculated the new vertex's position
-		and assigned different weights to the neighbor vertices, which will cause unbalance and formed the asymmetric shape.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_1.png" ><p>Without loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2.png" ><p>1 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_3.png" ><p>2 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_4.png" ><p>4 loop subdivision</p></div>
-	</div>
-	<p>
-		To solve this assymetric issue, we just need to perform an edge split on each face first before loop subdivision so that each face has 2 edges. Then neighborhood vertex will have an equal weight / contribution to the new vertex in loop subdivision, and will form a more symmetrics shape after subdivision.
-		As we could see from the images below, the cubes that are edge split first will be much more balanced / symmetric than the original form.
-	</p>
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_1.png" ><p>Edge split first for each face</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_2.png" ><p>After 1 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_3.png" ><p>After 2 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_4.png" ><p>After 3 loop subdivision</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_5.png" ><p>After n loop subdivision</p></div>
-	</div>
-</div>
-
-
-<div class="container">
-	<h2 id="task3">Part 3</h2>
 	<p> <b> 3.1 Walk through both implementations of the direct lighting function. </b></p>
 	<p> Direct Lighting with Uniform Hemisphere Sampling:
 		<li>
@@ -265,7 +151,7 @@
 	</div>
 
 
-	<p> <b>3.3 compare the noise levels in soft shadows</b></p>
+	<p> <b>3.3 Compare the noise levels in soft shadows</b></p>
 	<p>It is clear from the comparson below that the noise decreases linearly and largely with the increase of number of sample light rays, and the shadows smoothes out with the increase of number of light rays.</p>
 	<div class="row justify-content-md-center text-center">
 		<div class="col-md-6"><img class="img-fluid" src="img/bunny_s1_l1.png" ><p>CBbunny.dae, Importance Sampling Lights, 1 light ray, 1 sample per pixel</p></div>
@@ -287,6 +173,64 @@
 		<div class="col-md-6"><img class="img-fluid" src="img/bunny_16_8_uniform.png" ><p>Uniform Sampling Lights, 16 light ray, 8 sample per pixel</p></div>
 		<div class="col-md-6"><img class="img-fluid" src="img/bunny_16_8_importance.png" ><p>Importance Sampling Lights, 16 light ray, 8 sample per pixel</p></div>
 	</div>
+</div>
+
+<div class="container">
+	<h2 id="task3">Part 4</h2>
+	<p> <b>4.1 Walk through your implementation of the indirect lighting function.	</b></p>
+	<p>
+		If the max_ray_depth is 0, we will return only zero_bounce_radiance, which is the rendering with no bounces of lights. 
+		If the max_ray_depth is greater or equal to 1, we will initialize the illumination from one_bounce_radiance (which is the direct illumination of either hemisphere or importance sampling).
+		<br>
+		For max_ray_depth > 1, we will use recursive functions to calculate indirect lighting. We initialize each ray with <code>max_ray_depth</code> depth; for each recursive call, we will minus the depth by 1. Termination conditions are either: 
+		1) the rays' depth is smaller or equal to 0; or
+		2) It is not the first indirect ray sampling and the generated random probability is smaller than the Russian Roulette number (we set to 0.7 here).
+		<br>
+		If not terminated, we will sample a new incoming ray direction given the outgoing radiance w_out and writes the sampled incoming direction vector to <code>wi</code> and probability to <code>pdf</code> pointers. 
+		We then create a new Ray using the hit point and the sampled direction in world space (<code>o2w * wi</code>), and sets its depth to be <code>max_ray_depth</code> and min_t to be EPS_F. 
+		<br>
+		If this incoming ray intersects with the light, we will recursively calculate its radiance by calling <code>at_least_one_bounce_radiance</code> on the new incoming ray. We will then add the radiance from <code>at_least_one_bounce_radiance</code> * 
+		current's bsdf function * <code>cos_theta(wi)</code>, and then normalize the weight by dividing by pdf and the russianRoulette probability.
+	</p>
+
+	<p> <b>4.2 Show some images rendered with global (direct and indirect) illumination. Use 1024 samples per pixel.</b></p>
+		
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/spheres_s1024_m5.png" ><p>Global illumination, 5 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s1024_m5.png" ><p>Global illumination, 5 maximum ray depths, 1024 samples per area light</p></div>
+	</div>
+
+	<p> <b>4.3 Compare only direct illumination, then only indirect illumination</b></p>
+	<p>As we could see, with only direct lighting, the areas of lighting source (e.g. ceiling light) or one bounce areas (bunny back under the ceiling light) are lighter, where other parts are much darker and the contrast is pretty obvious. 
+		With indirect lighting only, areas that could be lighted up from lights bouncing around (the bunny body) are lighter than the left image, and the lights on the bunny are more equal than the left image.  </p>
+		
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_direct.png" ><p>Global illumination, direct lighting only, 5 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_indirect.png" ><p>Global illumination, indirect lighting only, 5 maximum ray depths, 1024 samples per area light</p></div>
+	</div>
+
+	<p> <b>4.4 Compare max_ray_depth to 0, 1, 2, 3, 100</b></p>
+
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_m0.png" ><p>Global illumination, 0 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_m1.png" ><p>Global illumination, 1 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_m2.png" ><p>Global illumination, 2 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_m3.png" ><p>Global illumination, 3 maximum ray depths, 1024 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_m100.png" ><p>Global illumination, 100 maximum ray depths, 1024 samples per area light</p></div>
+	</div>
+
+	<p> <b>4.4 Compare sample-per-pixel rates - 1, 2, 4, 8, 16, 64, and 1024</b></p>
+
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s1_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 1 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s2_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 2 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s4_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 4 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s8_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 8 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s16_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 16 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s64_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 64 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_s1024_l4.png" ><p>Global illumination, 4 light ray, 5 max ray depths, 1024 samples per area light</p></div>
+	</div>
+
 </div>
 
 
