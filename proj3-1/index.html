@@ -43,7 +43,7 @@
 </head>
 <body style="padding: 20PX;">
 <div class="container text-center">
-	<h1 id = "project-1-rasterizer">Project 3: PathTracer</h1>
+	<h1 id = "project-1-rasterizer">Project 3-1: Pathtracer</h1>
 	<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
 	<p>Here is the link to our pages: <a href="https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/">https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/</a></p>
 </div>
@@ -229,6 +229,66 @@
 		<div class="col-md-6"><img class="img-fluid" src="img/t6_3_2_5.png" ><p>After n loop subdivision</p></div>
 	</div>
 </div>
+
+
+<div class="container">
+	<h2 id="task3">Part 3</h2>
+	<p> <b> 3.1 Walk through both implementations of the direct lighting function. </b></p>
+	<p> Direct Lighting with Uniform Hemisphere Sampling:
+		<li>
+			The starter coded provided us the hit point and w_out as pointing towards the source of the ray. We then sample num_samples lights, where num_samples = <code>ns_area_light</code> (number samples per light source) * the number of lights. 
+			We use UniformHemisphereSampler3D::get_sample() to return a uniformaly random sampled direction vector onto the hemisphere in the object-space coordinate w_in. We then create a new Ray using the hit point and the sampled direction in world space (<code>o2w * wi</code>).
+		</li>
+		<li>
+			If the ray intersects with a light source, we will then add it to our Monte Carlo estimator calculation. We used <code>BSDF::f</code> function to calculate the BSDF vector fr(p, wi -> wr), provided <code>cos_theta(w_in)</code> to calculate theta, and <code>bsdf->get_emission()</code> to calculate Li(p, wi).
+			To normalize over the hemisphere, we also divide L_out by num_samples and <code>2 * PI</code> (because uniformaly sampled in hemisphere, p(wi) = 1 / (2 * pi)).
+		</li>
+	</p>
+	<p>
+		Direct Lighting by Importance Sampling Lights:
+		<li>
+			We iterate over the lights in the scene, and samples the lights using <code>SceneLight::sample_L</code>. If the light is a delta light which indicates that it is a point light source, we will only sample once. Otherwise, we will sample <code>ns_area_light</code> times (number samples per light source).
+			<code>SceneLight::sample_L</code> will give us <code>wi</code>, the sampled direction between hit point and the light source in world space. We then create a new Ray using the hit point and wi. We set the ray's min_t to EPS_F for numerical precision, and max_t to be the distToLight (the distance between light source and hit point) - EPS_F. 
+		</li>
+		<li>
+			Since wi is in world space, we will convert it to object space w_in_obj = w2o * wi. We only cast a ray if no other object between hit point and the light source (no intersects between the newRay and the shadow isect), and in the direction (cos_theta(w_in_obj) > 0). If these conditions are met, we will calculate the Monte Carlo estimaor by adding
+			the emitted radiance * BSDF vector fr(p, wi -> wr) (using <code>BSDF::f</code>) * <code>cos_theta(w_in_obj)</code> / pdf. We will finally normalize the estimator by dividing the L_out with number of samples.
+		</li>
+	</p>
+
+	<p> <b>3.2 Show some images rendered with both implementations of the direct lighting function.</b></p>
+		
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_uniform_64_32.png" ><p>CBbunny.dae, Direct Lighting with Uniform Hemisphere Sampling, 64 camera rays per pixel, 32 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_importance_64_32.png" ><p>CBbunny.dae, Direct Lighting with Importance Sampling Lights, 64 camera rays per pixel, 32 samples per area light</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/dragon_importance_64_32.png" ><p>dragon.dae, direct Lighting with Importance Sampling Lights, 64 camera rays per pixel, 32 samples per area light</p></div>
+	</div>
+
+
+	<p> <b>3.3 compare the noise levels in soft shadows</b></p>
+	<p>It is clear from the comparson below that the noise decreases linearly and largely with the increase of number of sample light rays, and the shadows smoothes out with the increase of number of light rays.</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_s1_l1.png" ><p>CBbunny.dae, Importance Sampling Lights, 1 light ray, 1 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_s1_l4.png" ><p>CBbunny.dae, Importance Sampling Lights, 1 light ray, 4 sample per pixelt</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_s1_l16.png" ><p>CBbunny.dae, Importance Sampling Lights, 1 light ray, 16 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_s1_64.png" ><p>CBbunny.dae, Importance Sampling Lights, 1 light ray, 64 sample per pixel</p></div>
+	</div>
+
+
+	<p> <b>3.4 Compare the results between uniform hemisphere sampling and lighting sampling in a one-paragraph analysis</b></p>
+	<p>The importance sampling lights method converges much faster (it has little noise when only 16 light ray and 8 samples per light) and with much less noise, while the uniform hemisphere presents much noise even with 64 light ray and 32 sample per pixel. This is because importance samplingwe only consider
+		samplings from light rays that contribute to the lighting of the objects in the scene, while the noise in uniform hemisphere sampling is because only a small portion of sampled rays actually intersects with the light source.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/CBbunny_uniform_64_32.png" ><p>Uniform Hemisphere Sampling, 64 light ray, 32 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_importance_64_32.png" ><p>Importance Sampling Lights, 64 light ray, 32 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_uniform_s16_l32.png" ><p>Uniform Sampling Lights, 32 light ray, 16 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_importance_s16_l32.png" ><p>Importance Sampling Lights, 32 light ray, 16 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_16_8_uniform.png" ><p>Uniform Sampling Lights, 16 light ray, 8 sample per pixel</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_16_8_importance.png" ><p>Importance Sampling Lights, 16 light ray, 8 sample per pixel</p></div>
+	</div>
+</div>
+
 
 </body>
 </html>
