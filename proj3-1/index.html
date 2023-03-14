@@ -233,6 +233,24 @@
 
 </div>
 
+<div class="container">
+	<h2 id="task3">Part 5</h2>
+	<p> <b>5.1 Walk through your implementation of the adaptive sampling.</b></p>
+	<p>
+		When rendering samples per pixel, we don't have to have to always In the <code>PathTracer::raytrace_pixel()</code> function, if the current number of pixels we calculated is a multiply of samplesPerBatch, we will calculate the samples' illuminance xk to
+		 compute the mean and variance. Then we compare the current I = 1.96 *  square root of variance / square root of current sample count with the maxTolerance * mean. If the condition is met, it means current pixel has converged and we will stop generating new samples.
+	</p>
+	<p> <b>5.2 Pick two scenes and render them with at least 2048 samples per pixel</b></p>
+	<p>
+		The scenes are rendered with 2048 samples per pixl, 5 max ray depth, and 1 sample per light. As we could see from the heat map, areas that are lighter (e.g. top of bunny's back or the wall next to bunny, top of the spheres) will converge faster with more green / blue,
+		while other ares that are darker (the sahdes areas of the spheres) will require longer to converge and shows as red in the heat map.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_p5.png" ><p>Bunny rendering</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/bunny_rate_p5.png" ><p>Bunny rendering heat map</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/spheres_p5.png" ><p>Sphere rendering</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/spheres_rate_p5.png" ><p>Sphere rendeirng heat map</p></div>
+	</div>
 
 </body>
 </html>
