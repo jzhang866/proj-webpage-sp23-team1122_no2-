@@ -1,7 +1,141 @@
+<style>
+
+	*{
+		font-family: "Times New Roman";
+	}
+
+	h1{
+		font-size: 70px;
+	}
+
+	h2{
+		font-size: 40px;
+	}
+
+	p{
+		font-size: 20px;
+	}
+
+	ul{
+		font-size: 30px;
+	}
+
+	body {
+		color: black;
+	}
+
+	.task_img {
+		width: 800px;
+		margin: 20px;
+	}
+
+	.task3 {
+		height: 500px;
+		width:  500px;
+		margin: 20px;
+	}
+
+</style>
+
 <html>
-	<head>
-	</head>
-	<body>
-		Project 3-2 here
-	</body>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="padding: 20PX;">
+<div class="container text-center">
+	<h1 id = "project-1-rasterizer">Project 3-2: Pathtracer</h1>
+	<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
+	<p>Here is the link to our pages: <a href="https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/">https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/</a></p>
+</div>
+<br>
+
+<div class="container">
+	<h2 id="overview">Overview</h2>
+	<p>
+		In assignment 3-2, we have finished Part 1 and Part 4, implementing Mirror and Glass Materials rendering and Depth of Field rendering.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task1">Part 1</h2>
+	<p>
+		1.1
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_0.png" ><p>max_ray_depth = 0</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_1.png" ><p>max_ray_depth = 1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_2.png" ><p>max_ray_depth = 2</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_3.png" ><p>max_ray_depth = 3</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_4.png" ><p>max_ray_depth = 4</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t1_5.png" ><p>max_ray_depth = 5</p></div>
+	</div>
+	<p>
+		1.2 When max_ray_depth is set to 0, the light source is rendered. When it is set to 1, we can see the walls, the floor and the reflection on two spheres.
+		When it is set to 2, we can see the ceiling, more natural shadows, the reflection of the environment on both spheres while that on the right one is
+		much shallower. When it is set to 3, We can then see the ceiling in the left mirror sphere and the refraction phenomenon in the right glass sphere.
+		When it is set to 4, the reflection of the glass sphere in the mirror sphere is correct, also we can see a light spot on the right wall. When
+		max_ray_depth is set to 5, everything looks almost the same as the last one, except the whole scene looks a little brighter.
+	</p>
+	<p>
+		1.3 In zero-bounce situation, we can only see the light source because it's the only light that goes directly into cameras without any bounces.
+		When it is one-bounce rendered, it equals to direct illumination. Some light falling on the spheres, walls and the floor from the light source would bounce to
+		the camera. When we take the second bounce into consideration, some light after one bounce would then go to the both spheres and then bouncing back
+		to the image plane, resulting to a second-bounce and the reflection on the two spheres. We would also find the shadow is much more natural and we can see the ceiling now, because
+		some light falling on the wall would bounce back to the shadow area and the ceiling and then bounce to the camera. When max_ray_depth is set to 3, some light after one bounce on the floor would
+		bounce to the sphere and then bounce to the camera, leading to the reflection of the ceiling on the left sphere. What's more, after two refractions(bounces), some light falls in the shadow of
+		the right sphere and after one more bounce, we can see them from the image. Besides, some light rays after the first bounce would bounce in the right sphere's direction, and after two refraction,
+		which are also two bounces, go to the image plane, enabling us to see the refraction phenomenon in the right glass sphere. The main feature after four bounces is the light spot on the right wall.
+		This is because some emitted light would first bounce on the left wall and experience two fractions, arriving at the right wall. Then after one more bounce, these spots bounce to the image plane, leaving that
+		spot on the rendered image. The fifth bounce does not introduce any clear differences. However, there are still many minor changes like the whole image is a little brighter, since after one more bounce more light arrives at the image plane and contributes to the image.
+
+	</p>
+
+
+</div>
+
+<div class="container">
+	<h2 id="task2">Part 4</h2>
+	<p>
+		2.1 To construct BVH, we first implement some base case. Specifically, we first check whether the number of input primitives is less than the max_leaf_size. If true, we would take this node as a
+		leaf and return. If not, we would split these primitives into two parts through a heuristic method, and then we would recursively call construct_bvh to create the two corresponding nodes and assign
+		these two nodes as the left and the right child node of the previous one. About our heuristic method used to separate primitives into two groups, we first obtain the mean of the centroids of the bounding boxes of all
+		primitives. Then we would count the numbers of primitives in two groups after the separation. Specifically, the primitives whose x is smaller than the mean's would be taken in one group and others would
+		be in the other group. We do these along x-axis, y-axis and z-axis correspondingly. Then, we would choose the axis, along which the numbers of primitives assigned into two groups are as close as possible, as the final axis used
+		to split primitives. We think this would help us to split primitives as evenly as possible, trying to avoid creating some empty nodes.
+
+
+		<br>
+		2.2
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t21blob.png" ><p>blo</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t21CBdragon.png" ><p>CBdragon</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t21CBlucy.png" ><p>CBlucy</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t21wall-e.png" ><p>wall-e</p></div>
+	</div>
+	<br>
+	2.3 We test our BVH acceleration on two rendering cases, one is CBcoil and another one is CBbunny. About CBcoil, without BVH acceleration, it took 22.8770 sec to do the rendering, while it took
+	0.0846 with BVH acceleration. About CBcoil, without BVH acceleration, it took 134.9340 sec to do the rendering, while it took 0.0735 with BVH acceleration. It is very interesting to see that though some case takes
+	much longer to render without BVH acceleration, with BVH acceleration they almost finish rendering in the same time. One reason we think is though the number of primitives in two rendering cases might
+	be significantly different, if the distributions of these primitives in the environments are quite similar, the rendering time would be similar, but of course we also need to take the size and the viewpoint and some other factors
+	into consideration.
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t22CBcoil.png" ><p>CBcoil</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t22CBbunny.png" ><p>CBbunny</p></div>
+
+	</div>
+	</p>
+
+</div>
+
+<div class="container">
+	<h2 id="task6">Collaboration</h2>
+	<p>
+		In assignment 3, Zhiwei finished task 1 and 2, Jinghua finished task 3, 4 and 5. We collaborated in this way because Zhiwei was quite busy in the last few days while
+		Jinghua didn't have too much free time in the first few days. However, whenever everyone met some problems we would try to solve it together. We all think it was a great
+		collaboration and had an excellent outcome. Although we were responsible for different parts, both of us have learned all the knowledge in this assignment because we went through all
+		the code, including that was responsible by the other one.
+	</p>
+</div>
+
+</body>
 </html>
