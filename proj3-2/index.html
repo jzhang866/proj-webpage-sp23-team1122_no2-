@@ -96,43 +96,33 @@
 <div class="container">
 	<h2 id="task2">Part 4</h2>
 	<p>
-		2.1 To construct BVH, we first implement some base case. Specifically, we first check whether the number of input primitives is less than the max_leaf_size. If true, we would take this node as a
-		leaf and return. If not, we would split these primitives into two parts through a heuristic method, and then we would recursively call construct_bvh to create the two corresponding nodes and assign
-		these two nodes as the left and the right child node of the previous one. About our heuristic method used to separate primitives into two groups, we first obtain the mean of the centroids of the bounding boxes of all
-		primitives. Then we would count the numbers of primitives in two groups after the separation. Specifically, the primitives whose x is smaller than the mean's would be taken in one group and others would
-		be in the other group. We do these along x-axis, y-axis and z-axis correspondingly. Then, we would choose the axis, along which the numbers of primitives assigned into two groups are as close as possible, as the final axis used
-		to split primitives. We think this would help us to split primitives as evenly as possible, trying to avoid creating some empty nodes.
-
-
-		<br>
-		2.2
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t21blob.png" ><p>blo</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t21CBdragon.png" ><p>CBdragon</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t21CBlucy.png" ><p>CBlucy</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t21wall-e.png" ><p>wall-e</p></div>
-	</div>
-	<br>
-	2.3 We test our BVH acceleration on two rendering cases, one is CBcoil and another one is CBbunny. About CBcoil, without BVH acceleration, it took 22.8770 sec to do the rendering, while it took
-	0.0846 with BVH acceleration. About CBcoil, without BVH acceleration, it took 134.9340 sec to do the rendering, while it took 0.0735 with BVH acceleration. It is very interesting to see that though some case takes
-	much longer to render without BVH acceleration, with BVH acceleration they almost finish rendering in the same time. One reason we think is though the number of primitives in two rendering cases might
-	be significantly different, if the distributions of these primitives in the environments are quite similar, the rendering time would be similar, but of course we also need to take the size and the viewpoint and some other factors
-	into consideration.
-	<div class="row justify-content-md-center text-center">
-		<div class="col-md-6"><img class="img-fluid" src="img/t22CBcoil.png" ><p>CBcoil</p></div>
-		<div class="col-md-6"><img class="img-fluid" src="img/t22CBbunny.png" ><p>CBbunny</p></div>
-
-	</div>
+		4.1 Pinhole model is an ideal model where everything is in focus, so the obtained image would be a perfect inverse of the scene. However, in reality we would have lens instead of a hole in the
+		camera. This would introduce some difference. For instance, not every thing would be in focus, instead, only objects at some certain distance would be clear in the image, while others won't. It results from the fact
+		that the lens can only perfectly project the light from some specific distance on the image plane, while others will not be in focus.
 	</p>
+
+	<p>4.2</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/d3.5.png" ><p>focal distance = 3.5</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/b0.23d4.5.png" ><p>focal distance = 4.5</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/d4.7.png" ><p>focal distance = 4.7</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/d5.0.png" ><p>focal distance = 5.0</p></div>
+	</div>
+	<p>4.3</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/b0.23d4.5.png" ><p>lens radius = 0.23</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/b0.15.png" ><p>lens radius = 0.15</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/b0.08.png" ><p>lens radius = 0.08</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/b0.02.png" ><p>lens radius = 0.02</p></div>
+	</div>
+
 
 </div>
 
 <div class="container">
 	<h2 id="task6">Collaboration</h2>
 	<p>
-		In assignment 3, Zhiwei finished task 1 and 2, Jinghua finished task 3, 4 and 5. We collaborated in this way because Zhiwei was quite busy in the last few days while
-		Jinghua didn't have too much free time in the first few days. However, whenever everyone met some problems we would try to solve it together. We all think it was a great
-		collaboration and had an excellent outcome. Although we were responsible for different parts, both of us have learned all the knowledge in this assignment because we went through all
+		In assignment 3-2, Zhiwei and Jinghua finished reports and coding equally. We both think it was a great collaboration and had an excellent outcome. Although we were responsible for different parts, both of us have learned all the knowledge in this assignment because we went through all
 		the code, including that was responsible by the other one.
 	</p>
 </div>
