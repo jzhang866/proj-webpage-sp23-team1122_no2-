@@ -1,7 +1,148 @@
+<style>
+
+	*{
+		font-family: "Times New Roman";
+	}
+
+	h1{
+		font-size: 70px;
+	}
+
+	h2{
+		font-size: 40px;
+	}
+
+	p{
+		font-size: 20px;
+	}
+
+	ul{
+		font-size: 30px;
+	}
+
+	body {
+		color: black;
+	}
+
+	.task_img {
+		width: 800px;
+		margin: 20px;
+	}
+
+	.task3 {
+		height: 500px;
+		width:  500px;
+		margin: 20px;
+	}
+
+</style>
+
 <html>
-	<head>
-	</head>
-	<body>
-		Project 4 here
-	</body>
+<head>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body style="padding: 20PX;">
+<div class="container text-center">
+	<h1 id = "project-4-rasterizer">Project 4: Cloth Sim</h1>
+	<p>Partners: Jinghua Zhang, Zhiwei Zheng</p>
+	<p>Here is the link to our pages: <a href="https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/">https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/</a></p>
+</div>
+<br>
+
+<div class="container">
+	<h2 id="overview">Overview</h2>
+	<p>
+		In assignment 4, we have completed cloth simulation system based on point mass and spring system, including the initial data structure to represent the point mass and spring system, to physical collision simulation.
+	</p>
+</div>
+
+<div class="container">
+	<h2 id="task1">Part 1</h2>
+	<p>
+		1.1 Take some screenshots of scene/pinned2.json from a viewing angle
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_1.png" ></div>
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_1.png" ></div>
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_2.png" ></div>
+	</div>
+	<p>
+		1.2 Show us what the wireframe looks like with different constraints.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_4.png" ><p>without any shearing constraints</p></div>
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_5.png" ><p>with only shearing constraints</p></div>
+		<div class="col-md-12"><img class="img-fluid" src="img/t1_6.png" ><p>with all constraints</p></div>
+	</div>
+
+
+</div>
+
+<div class="container">
+	<h2 id="task2">Part 2</h2>
+	<p>
+		2.1 Describe the effects of changing the spring constant ks; how does the cloth behave from start to rest with a very low ks? A high ks?
+	</p>
+	<p>
+		ks refers to the spring constant determineswho stiff the spring is. The smaller ks constant is, the more stretch / flexible the cloth is and will wave more / bounces for longer. The larger ks will present the cloth to be stiff with less wrinkles.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_ks_5.png" ><p>Small ks = 5, flexible with more wrinkles</p>/div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_ks_50000.png" ><p>Large ks = 50000, stiff with less wrinkles</p></div>
+	</div>
+
+	<p>2.2 Density</p>
+	<p>
+		Density represents how much weight / mass each point mass hold, which will be applied as forces on each point mass / spring. The larger density is, more weight / forces will be applied to the simulated cloth and there will be larger / more obvious wrinkles shown on the cloths, and the overall cloths will be dragged towards the ground more.
+		The smaller density is, less weight / mass are calculated and less force on the spring, so less wrinkles will be displayed.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_d_2.png" ><p>Small density = 2, less mass / weight, small wrinkles</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_d_15.png" ><p>Normal density = 15, some wrinkles are shown</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_d_100.png" ><p>Large density = 100, huge wrinkles are shown, pulled more towards the ground </p></div>
+	</div>
+	<p>2.3 Damping</p>
+	<p>
+		Damping refers to how much energy is lost during the spring oscillations due to friction or heat loss. The larger damping is, more energy is lost in the process between different steps, the cloths will drop and become still faster and bounce less. The smaller damping is, less energy is lost 
+		between each step and the cloths will hang and bounces back and forth for longer.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_damping_0.02.png" ><p>Small damping = 0.02, more bounces and more wrinkles</p>/div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t2_damping_0.8.png" ><p>Large damping = 0.8, less bounce around</p></div>
+	</div>
+	<p>
+		2.5 Final Resting State with default values
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-12"><img class="img-fluid" src="img/t2_default.png" ><p>Resting final state with default values</p>/div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task3">Part 3</h2>
+	<p>
+		3.1 As shown in the screenshots below, the larger the ks is, the more stiff the cloths are so that there will be less wrinkles on the cloths, and the cloths looks more stiff on top of the sphere. With smaller ks (when ks = 500), cloths will be more closely fit on top of the sphere.
+	</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_ks_500.png" ><p> ks = 500</p>/div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_ks_5000.png" ><p>ks = 5000</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t3_ks_50000.png" ><p>ks = 50000</p></div>
+	</div>
+
+	<p>3.2 As displayed in the below image, cloth will be resting on top of the plane.</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-12"><img class="img-fluid" src="img/t3_plane.png" ></div>
+	</div>
+	</div>
+</div>
+
+<div class="container">
+	<h2 id="task6">Collaboration</h2>
+	<p>
+		In assignment 4, Zhiwei and Jinghua finished reports and coding equally. We both think it was a great collaboration and had an excellent outcome. Although we were responsible for different parts, both of us have learned all the knowledge in this assignment because we went through all
+		the code, including that was responsible by the other one.
+	</p>
+</div>
+
+</body>
 </html>
