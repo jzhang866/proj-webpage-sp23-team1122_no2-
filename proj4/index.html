@@ -137,6 +137,76 @@
 </div>
 
 <div class="container">
+	<h2 id="task4">Part 4</h2>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_1.png" ><p>1st</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_2.png" ><p>2nd</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_3.png" ><p>3rd</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4_4.png" ><p>4th</p></div>
+	</div>
+
+	<p>3.2 The influences of density and ks are shown in the following images.</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-5.png" ><p>density=1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-6.png" ><p>density=1</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-7.png" ><p>density=100</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-8.png" ><p>density=100</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-9.png" ><p>ks=500</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-10.png" ><p>ks=500</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-11.png" ><p>ks=50000</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t4-12.png" ><p>ks=50000</p></div>
+	</div>
+	<p>We can easily find that how the variables density and ks influence the behavior of cloth. Increasing the density has a similar influence as
+	decreasing the ks, which will increase the number of wrinkles during the falling, while reducing the density has a similar influence as increasing the ks, which will
+	 reduce the number of wrinkles during the falling.</p>
+</div>
+
+
+<div class="container">
+	<h2 id="task5">Part 5</h2>
+	<p>5.1 A shader program consists of two parts, vertex shader and fragment shader. It's a program that runs in parallel on GPU and the output of the vertex shader would be
+	the input of the fragment shader. In vertex shader, we can calculate to obtain the corresponding coordinate in the world space and the screen space given the coordinate in the
+	model space. We can also modify their geometric properties here. In the fragment shader, we would use it to get the color and the lighting of the given fragment(pixel). </p>
+	<p>5.2 Blinn-Phong shading model consists of three parts, ambient lighting, diffuse lighting and specular lighting. The ambient lighting is a hypothetical uniformly-distributed lighting.
+	Diffuse lighting follows diffuse shading formula while specular lighting follows specular shading formula. Lighting in the Blinn-Phong shading model is the weighted sum of these three types of lighting</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-2.png" ><p>ambient lighting</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-3.png" ><p>diffuse lighting</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-4.png" ><p>specular lighting</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-1.png" ><p>Blinn-Phong shading model</p></div>
+	</div>
+
+	<p>5.3</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-5.png" ></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/sakura.png" ></div>
+	</div>
+	<p>5.4</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-6.png" ><p>bump mapping on the cloth and on the sphere</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-7.png" ><p>displacement mapping on the sphere</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-8.png" ><p>bump mapping</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-9.png" ><p>displacement mapping</p></div>
+	</div>
+	<p>Bump mapping changes the normal of the object's surface to change the light on that pixel, making the rendered image more realistic. Displacement mapping even changes
+	the position of vertices further in the vertex shader which would change the geometry of the object to make it more realistic. We can find that after the displacement mapping, the
+	edge of the sphere is no longer a perfect circle, instead we can see some bump in the shape, while the periphery of the sphere after bump mapping is still a perfect circle.</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-10.png" ><p>bump mapping(-o 16 -a 16)</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-12.png" ><p>bump mapping(-o 128 -a 128)</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-11.png" ><p>displacement mapping(-o 16 -a 16)</p></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-13.png" ><p>displacement mapping(-o 128 -a 128</p></div>
+	</div>
+	<p>Both mapping methods obtain a better achieve a better rendering results after increasing the resolution. However,compared to the displacement mapping, the bump mapping doesn't change too much. While, as we can see, after increasing the vertical and the horizontal resolution, in displacement mapping the edge of the bricks at
+	the top of the sphere is much sharper.</p>
+	<p>5.5</p>
+	<div class="row justify-content-md-center text-center">
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-14.png" ></div>
+		<div class="col-md-6"><img class="img-fluid" src="img/t5-15.png" ></div>
+	</div>
+</div>
+
+<div class="container">
 	<h2 id="task6">Collaboration</h2>
 	<p>
 		In assignment 4, Zhiwei and Jinghua finished reports and coding equally. We both think it was a great collaboration and had an excellent outcome. Although we were responsible for different parts, both of us have learned all the knowledge in this assignment because we went through all
