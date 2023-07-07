@@ -9,3 +9,5 @@ To enable Github pages, go to the 'Settings' tab then click on 'Pages'. Under 'S
 ## Adding Project Webpages
 
 There are 5 folders, one for each project. Each contains an index.html file. When the links from the mainpage are clicked, these files will be loaded, so edit these to add your project webpages.
+
+https://jzhang866.github.io/proj-webpage-sp23-team1122_no2-/
